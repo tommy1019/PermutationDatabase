@@ -12,7 +12,7 @@ func editHandler (request: HTTPRequest, response: HTTPResponse)
     let verified = request.param(name: "verified", defaultValue: "off")?.boolValue
 
     response.addHeader(.contentType, value: "text/html")
-    response.appendBody(string: HTMLConstants.getHeader(title: "Delete"))
+    response.appendBody(string: HTMLConstants.getHeader(title: "Edit"))
 
     if let id = id
     {
@@ -71,7 +71,7 @@ func editHandler (request: HTTPRequest, response: HTTPResponse)
                     methods = "<input type=\"text\" name=\"method\" style=\"width:125px;\">"
                 }
 
-                response.appendBody(string: "<h3><input type='checkbox' name='verified' value='\(row[4] == "0" ? "off" : "on")'>Verified, Using method: \(methods)</h3>")
+                response.appendBody(string: "<h3><input type='checkbox' name='verified' \(row[4] == "0" ? "" : "checked")>Verified, Using method: \(methods)</h3>")
 
                 var authors = "<select name=\"author\">"
                 if aMysql.0.query(statement: "SELECT name, id FROM author;")

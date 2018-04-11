@@ -3,7 +3,7 @@ import PerfectMySQL
 
 import Foundation
 
-func getAddHTMLFourm() -> String
+func getAddHTMLFourm(_ pass : String?) -> String
 {
     var authors = "<select name=\"author\">"
     var methods = "<select name=\"method\">"
@@ -58,6 +58,7 @@ func getAddHTMLFourm() -> String
     Author: \(authors)<br>
     Method: \(methods)<br>
     Verified <input name="verified" type="checkbox"><br>
+    \(pass != nil ? "<font color=\"red\">Incorrect password.</font><br>" : "")<input type='password' name='pass'><br>
     <input type="submit" value="Submit">
     </fieldset>
     </form>
@@ -91,6 +92,7 @@ func addHandler (request: HTTPRequest, response: HTTPResponse)
     let author = request.param(name: "author")
     let method = request.param(name: "method")
     let verified = request.param(name: "verified", defaultValue: "off")?.boolValue
+    let pass = request.param(name: "pass")
 
     response.addHeader(.contentType, value: "text/html")
     response.appendBody(string: HTMLConstants.getHeader(title: "Add Result"))
@@ -102,7 +104,9 @@ func addHandler (request: HTTPRequest, response: HTTPResponse)
         let m = m,
         let author = author,
         let method = method,
-        let verified = verified
+        let verified = verified,
+        let pass = pass,
+        pass == HTMLConstants.password
     {
         var authorFound = mysql.0.query(statement: "SELECT id FROM author WHERE name = '\(author)';")
         var authorId = -1
@@ -171,7 +175,7 @@ func addHandler (request: HTTPRequest, response: HTTPResponse)
     }
     else
     {
-        response.appendBody(string: getAddHTMLFourm())
+        response.appendBody(string: getAddHTMLFourm(pass))
     }
 
     SQLPool.returnConnection(mysql.1)
