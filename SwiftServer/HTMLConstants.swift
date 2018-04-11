@@ -1,5 +1,7 @@
 class HTMLConstants
 {
+    static let password = "SlabUser!"
+
     static let menu = """
         <fieldset>
             <a href="index.php">Home</a><br>

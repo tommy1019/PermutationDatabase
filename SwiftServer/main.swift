@@ -19,6 +19,8 @@ routes.add(method: .get, uri: "/add.php", handler: addHandler)
 routes.add(method: .get, uri: "/addAuthor.php", handler: addAuthorHandler)
 routes.add(method: .get, uri: "/addMethod.php", handler: addMethodHandler)
 routes.add(method: .get, uri: "/listMethod.php", handler: listByMethodHandler)
+routes.add(method: .get, uri: "/delete.php", handler: deleteHandler)
+routes.add(method: .get, uri: "/edit.php", handler: editHandler)
 
 server.addRoutes(routes)
 server.serverPort = 8181

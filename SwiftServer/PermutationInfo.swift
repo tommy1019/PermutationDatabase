@@ -9,7 +9,7 @@ func infoHandler (request: HTTPRequest, response: HTTPResponse)
 
     let mysql = SQLPool.getConnection()
 
-    let requestSuccess = mysql.0.query(statement: "SELECT result.n, result.d, result.m, result.verified, author.name, method.name FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE result.n = \(n) AND result.d = \(d);")
+    let requestSuccess = mysql.0.query(statement: "SELECT result.id, result.n, result.d, result.m, result.verified, author.name, method.name FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE result.n = \(n) AND result.d = \(d);")
 
     response.addHeader(.contentType, value: "text/html")
     response.appendBody(string: HTMLConstants.getHeader(title: "Permutation Info"))
@@ -31,19 +31,22 @@ func infoHandler (request: HTTPRequest, response: HTTPResponse)
 
         response.appendBody(string: "<table>")
 
-        response.appendBody(string: "<tr><th>N</th><th>D</th><th>M(n,d)</th><th>Verified</th><th>Author</th><th>Type</th></tr>")
+        response.appendBody(string: "<tr><th>N</th><th>D</th><th>M(n,d)</th><th>Verified</th><th>Author</th><th>Type</th><th>Edit</th><th>Delete</th></tr>")
 
         results?.forEachRow
         {
             row in
 
             response.appendBody(string: "<tr>")
-            for i in 0...4
+            for i in 1...5
             {
                 response.appendBody(string: "<td>\(row[i] ?? "")</td>")
             }
 
-            response.appendBody(string: "<td><a href=\"methodInfo.php?name=\(row[5] ?? "")\">\(row[5] ?? "")</a></td>")
+            response.appendBody(string: "<td><a href=\"methodInfo.php?name=\(row[6] ?? "")\">\(row[6] ?? "")</a></td>")
+
+            response.appendBody(string: "<td><a href=\"edit.php?id=\(row[0] ?? "")\">Edit</a></td>")
+            response.appendBody(string: "<td><a href=\"delete.php?id=\(row[0] ?? "")\">Delete</a></td>")
 
             response.appendBody(string: "</tr>")
         }

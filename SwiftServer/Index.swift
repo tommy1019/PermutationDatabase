@@ -27,7 +27,7 @@ func indexHandler (request: HTTPRequest, response: HTTPResponse)
 
     let mysql = SQLPool.getConnection()
 
-    let requestSuccess = mysql.0.query(statement: "SELECT n, d, m FROM result WHERE result.n BETWEEN \(lowerN) AND \(upperN) AND result.d BETWEEN \(lowerD) AND \(upperD);")
+    let requestSuccess = mysql.0.query(statement: "SELECT n, d, m, bgColor, txtColor FROM result JOIN method ON method = method.id WHERE result.n BETWEEN \(lowerN) AND \(upperN) AND result.d BETWEEN \(lowerD) AND \(upperD);")
 
     var resultMap = [DoubleInt : MySQL.Results.Element]()
 
@@ -94,14 +94,15 @@ func indexHandler (request: HTTPRequest, response: HTTPResponse)
             let curIndex = DoubleInt(n: n, d: d)
             let row = resultMap[curIndex]
 
-            var num = ""
 
             if let row = row
             {
-                num = "<a href=\"info.php?n=\(n)&d=\(d)\">\(row[2]!)</a>"
+                response.appendBody(string: "<td bgcolor=\"\(row[3]!)\"><a href=\"info.php?n=\(n)&d=\(d)\">\(row[2]!)</a></td>")
             }
-
-            response.appendBody(string: "<td>\(num)</td>")
+            else
+            {
+                response.appendBody(string: "<td></td>")
+            }
         }
         response.appendBody(string: "</tr>")
     }
