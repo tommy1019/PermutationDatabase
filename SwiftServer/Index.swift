@@ -21,9 +21,19 @@ struct DoubleInt : Hashable
 func indexHandler (request: HTTPRequest, response: HTTPResponse)
 {
     let lowerN = Int(request.param(name: "lowerN", defaultValue: "2")!)!
-    let upperN = Int(request.param(name: "upperN", defaultValue: "10")!)!
+    var upperN = Int(request.param(name: "upperN", defaultValue: "10")!)!
     let lowerD = Int(request.param(name: "lowerD", defaultValue: "2")!)!
-    let upperD = Int(request.param(name: "upperD", defaultValue: "10")!)!
+    var upperD = Int(request.param(name: "upperD", defaultValue: "10")!)!
+
+    if (lowerN > upperN)
+    {
+        upperN = lowerN;
+    }
+
+    if (lowerD > upperD)
+    {
+        upperD = lowerD;
+    }
 
     let mysql = SQLPool.getConnection()
 
