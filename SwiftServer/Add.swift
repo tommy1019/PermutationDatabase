@@ -58,7 +58,7 @@ func getAddHTMLFourm(_ pass : String?) -> String
     Author: \(authors)<br>
     Method: \(methods)<br>
     Verified <input name="verified" type="checkbox"><br>
-    \(pass != nil ? "<font color=\"red\">Incorrect password.</font><br>" : "")<input type='password' name='pass'><br>
+    Password: \(pass != nil ? "<font color=\"red\">Incorrect password.</font><br>" : "")<input type='password' name='pass'><br>
     <input type="submit" value="Submit">
     </fieldset>
     </form>
@@ -69,6 +69,7 @@ let addAuthorHtmlForum = """
 <form>
 <fieldset>
 Name: <input type="text" name="name" style="width:150px;"><br>
+Password: <input type='password' name='pass'><br>
 <input type="submit" value="Submit">
 </fieldset>
 </form>
@@ -79,6 +80,7 @@ let addMethodHtmlForum = """
 <fieldset>
 Name: <input type="text" name="name" style="width:150px;"><br>
 Description: <input type="text" name="description" style="width:300px;"><br>
+Password: <input type='password' name='pass'><br>
 <input type="submit" value="Submit">
 </fieldset>
 </form>
@@ -187,11 +189,14 @@ func addHandler (request: HTTPRequest, response: HTTPResponse)
 func addAuthorHandler (request: HTTPRequest, response: HTTPResponse)
 {
     let author = request.param(name: "name")
+    let pass = request.param(name: "pass")
 
     response.addHeader(.contentType, value: "text/html")
     response.appendBody(string: HTMLConstants.getHeader(title: "Add Author"))
 
-    if let name = author
+    if  let name = author,
+        let pass = pass,
+        pass == HTMLConstants.password
     {
         let mysql = SQLPool.getConnection()
 
@@ -214,6 +219,7 @@ func addAuthorHandler (request: HTTPRequest, response: HTTPResponse)
     else
     {
         response.appendBody(string: addAuthorHtmlForum)
+        response.appendBody(string: "\(pass != nil ? "<font color=\"red\">Incorrect password.</font><br>" : "")")
     }
 
     response.appendBody(string: HTMLConstants.footer)
@@ -225,12 +231,15 @@ func addMethodHandler (request: HTTPRequest, response: HTTPResponse)
 {
     let name = request.param(name: "name")
     let description = request.param(name: "description")
+    let pass = request.param(name: "pass")
 
     response.addHeader(.contentType, value: "text/html")
     response.appendBody(string: HTMLConstants.getHeader(title: "Add Method"))
 
-    if let name = name,
-    let description = description
+    if  let name = name,
+        let description = description,
+        let pass = pass,
+        pass == HTMLConstants.password
     {
         let mysql = SQLPool.getConnection()
 
@@ -253,6 +262,7 @@ func addMethodHandler (request: HTTPRequest, response: HTTPResponse)
     else
     {
         response.appendBody(string: addMethodHtmlForum)
+        response.appendBody(string: "\(pass != nil ? "<font color=\"red\">Incorrect password.</font><br>" : "")")
     }
 
     response.appendBody(string: HTMLConstants.footer)

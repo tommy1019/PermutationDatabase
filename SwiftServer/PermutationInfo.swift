@@ -9,7 +9,7 @@ func infoHandler (request: HTTPRequest, response: HTTPResponse)
 
     let mysql = SQLPool.getConnection()
 
-    let requestSuccess = mysql.0.query(statement: "SELECT result.id, result.n, result.d, result.m, result.verified, author.name, method.name FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE result.n = \(n) AND result.d = \(d);")
+    let requestSuccess = mysql.0.query(statement: "SELECT result.id, result.n, result.d, result.m, result.verified, author.name, method.name, method.bgColor, method.txtColor FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE result.n = \(n) AND result.d = \(d) ORDER BY result.m DESC;")
 
     response.addHeader(.contentType, value: "text/html")
     response.appendBody(string: HTMLConstants.getHeader(title: "Permutation Info"))
@@ -37,11 +37,13 @@ func infoHandler (request: HTTPRequest, response: HTTPResponse)
         {
             row in
 
-            response.appendBody(string: "<tr>")
-            for i in 1...5
-            {
-                response.appendBody(string: "<td>\(row[i] ?? "")</td>")
-            }
+            response.appendBody(string: "<tr bgcolor=\"\(row[7]!)\">")
+
+            response.appendBody(string: "<td>\(row[1] ?? "")</td>")
+            response.appendBody(string: "<td>\(row[2] ?? "")</td>")
+            response.appendBody(string: "<td>\(row[3] ?? "")</td>")
+            response.appendBody(string: "<td>\(row[4] ?? "")</td>")
+            response.appendBody(string: "<td>\(row[5] ?? "")</td>")
 
             response.appendBody(string: "<td><a href=\"methodInfo.php?name=\(row[6] ?? "")\">\(row[6] ?? "")</a></td>")
 

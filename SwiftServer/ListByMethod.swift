@@ -48,7 +48,7 @@ func listByMethodHandler (request: HTTPRequest, response: HTTPResponse)
     {
         let mysql = SQLPool.getConnection()
 
-        let requestSuccess = mysql.0.query(statement: "SELECT result.n, result.d, result.m, result.verified, author.name, method.name FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE method.name = \"\(method)\";")
+        let requestSuccess = mysql.0.query(statement: "SELECT result.n, result.d, result.m, result.verified, author.name, method.name FROM result LEFT JOIN method ON result.method = method.id LEFT JOIN author ON result.author = author.id WHERE method.name = \"\(method)\" ORDER BY result.m DESC;")
 
         response.appendBody(string: "<br><h1>Results for \(method)</h1>")
 
